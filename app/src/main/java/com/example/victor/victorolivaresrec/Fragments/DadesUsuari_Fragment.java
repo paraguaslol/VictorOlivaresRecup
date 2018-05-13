@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+//import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
 
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.victor.victorolivaresrec.App_Main;
 import com.example.victor.victorolivaresrec.Model.Usuari;
 import com.example.victor.victorolivaresrec.R;
 import com.example.victor.victorolivaresrec.Usuaris.Activity_Login;
@@ -28,6 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import static android.app.Activity.RESULT_OK;
@@ -49,7 +53,9 @@ public class DadesUsuari_Fragment extends Fragment {
     private EditText etRegNomUsuari,etRegNom,etRegCognoms,etRegEmail,etRegPassword,etRegAdreça;
     private String regNomUsuari,regNom,regCognoms,regEmail,regPassword,regAdreça;
     private Button btnCancelar, btnOK;
-
+    static int boolParam;
+    public static String uidParam;
+    FragmentTransaction ft;
     private FirebaseAuth mAuth;
 
     public DadesUsuari_Fragment() {
@@ -93,23 +99,55 @@ public class DadesUsuari_Fragment extends Fragment {
 
         dbr = FirebaseDatabase.getInstance().getReference("usuaris");
 
-        btnCancelar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                returnLogin();
-            }
-        });
+        if(boolParam==0){
+            btnCancelar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    returnLogin();
+                }
+            });
+            btnOK.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    registrarUsuari();
+                }
+            });
+        }else{
+            setDades();
+            btnCancelar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    returnMain();
+                }
+            });
+            btnOK.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    modificarUsuari();
+                }
+            });
+        }
 
-        btnOK.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registrarUsuari();
-            }
-        });
 
         return v;
     }
 
+    public static DadesUsuari_Fragment newInstance(String id) {
+        DadesUsuari_Fragment fragment = new DadesUsuari_Fragment();
+        if(id==null){
+            boolParam=0;
+        }else{
+            uidParam=id;
+            boolParam=1;
+        }
+        //Bundle args = new Bundle();
+        //fragment.setArguments(args);    -- No necesitamos parámetros
+        return fragment;
+    }
+    public void modificarUsuari(){
+        checkFields2();
+        returnMain();
+    }
     public void registrarUsuari(){
 
         regNomUsuari = etRegNomUsuari.getText().toString();
@@ -126,9 +164,18 @@ public class DadesUsuari_Fragment extends Fragment {
     public void checkFields(){
         if (regNomUsuari.isEmpty() || regNom.isEmpty() || regCognoms.isEmpty() ||regEmail.isEmpty() ||
                 regPassword.isEmpty() || regAdreça.isEmpty()){
-            Toast.makeText(getContext(), "Debes rellenar todos los campos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Has de plenar tots els camps", Toast.LENGTH_SHORT).show();
         }else{
             createAccount();
+            Toast.makeText(getContext(), "Eureka!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void checkFields2(){
+        if (regNomUsuari.isEmpty() || regNom.isEmpty() || regCognoms.isEmpty() || regAdreça.isEmpty()){
+            Toast.makeText(getContext(), "Has de plenar tots els camps", Toast.LENGTH_SHORT).show();
+        }else{
+            updateDades();
+            Toast.makeText(getContext(), "Perfecte!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -139,6 +186,11 @@ public class DadesUsuari_Fragment extends Fragment {
 
     public void returnLogin(){
         Intent intent = new Intent(getContext(), Activity_Login.class);
+        startActivity(intent);
+        getActivity().finish();
+    }
+    public void returnMain(){
+        Intent intent = new Intent(getContext(), App_Main.class);
         startActivity(intent);
         getActivity().finish();
     }
@@ -162,9 +214,7 @@ public class DadesUsuari_Fragment extends Fragment {
                                         getActivity().getIntent().putExtra("userUID",user.getUid());
                                         getActivity().setResult(RESULT_OK,getActivity().getIntent());
                                         Toast.makeText(getContext(), "Registre exitós :)", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(getContext(), Activity_Login.class);
-                                        startActivity(intent);
-                                        getActivity().finish();
+                                        returnLogin();
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Log.e("TAG", "createUserWithEmail:failure", task.getException());
@@ -198,7 +248,43 @@ public class DadesUsuari_Fragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
-
+    public void setDades(){
+        Query q = dbr.orderByChild("auth").equalTo(uidParam);
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
+                    Usuari u = datasnapshot.getValue(Usuari.class);
+                    etRegNomUsuari.setText(u.getNomusuari());
+                    etRegNom.setText(u.getNom());
+                    etRegCognoms.setText(u.getCognoms());
+                    etRegEmail.setFocusable(false);
+                    etRegPassword.setFocusable(false);
+                    etRegAdreça.setText(u.getAdreça());
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+    public void updateDades(){
+        Query q = dbr.orderByChild("auth").equalTo(uidParam);
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
+                    dbr.child(uidParam).child("nomusuari").setValue(etRegNomUsuari.getText().toString());
+                    dbr.child(uidParam).child("nom").setValue(etRegNom.getText().toString());
+                    dbr.child(uidParam).child("cognoms").setValue(etRegCognoms.getText().toString());
+                    dbr.child(uidParam).child("adreça").setValue(etRegAdreça.getText().toString());
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
     @Override
     public void onDetach() {
         super.onDetach();

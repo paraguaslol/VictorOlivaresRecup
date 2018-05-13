@@ -33,7 +33,7 @@ public class App_Main extends AppCompatActivity implements NavigationView.OnNavi
 
     Llistar_Usuaris llistar_Usuaris;
     FragmentManager fm;
-    FragmentTransaction ft;
+    android.support.v4.app.FragmentTransaction ft;
     List<Llistar_Usuaris> myFragCardList = new ArrayList<>();
     TextView nomusuarihead, emailhead;
     String nomUsuari;
@@ -64,13 +64,8 @@ public class App_Main extends AppCompatActivity implements NavigationView.OnNavi
     }
 
     public void callLlistarFragment() {
-        fm = getFragmentManager();
-        fm.popBackStack();
-        ft = fm.beginTransaction();
-        llistar_Usuaris = new Llistar_Usuaris();
-        myFragCardList.add(llistar_Usuaris);
-        ft.add(R.id.mainFrameUsuaris, llistar_Usuaris, "");
-        ft.addToBackStack("Llistar_Usuaris");
+        Llistar_Usuaris llistar_usuaris = new Llistar_Usuaris();
+        ft = getSupportFragmentManager().beginTransaction().replace(R.id.mainFrameUsuaris,llistar_usuaris);
         ft.commit();
     }
     public void plenaNav(){

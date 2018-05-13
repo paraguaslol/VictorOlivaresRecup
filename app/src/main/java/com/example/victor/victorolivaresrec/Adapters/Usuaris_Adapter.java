@@ -1,6 +1,7 @@
 package com.example.victor.victorolivaresrec.Adapters;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import com.example.victor.victorolivaresrec.App_Main;
+import com.example.victor.victorolivaresrec.Fragments.DadesUsuari_Fragment;
+import com.example.victor.victorolivaresrec.Fragments.Llistar_Usuaris;
 import com.example.victor.victorolivaresrec.Model.Usuari;
 import com.example.victor.victorolivaresrec.R;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +35,7 @@ public class Usuaris_Adapter extends RecyclerView.Adapter<Usuaris_Adapter.Usuari
     public void setOnClickListener(View.OnClickListener listener) {
         this.listener = listener;
     }
+
 
     @Override
     public Usuaris_Adapter.UsuariViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -65,7 +72,7 @@ public class Usuaris_Adapter extends RecyclerView.Adapter<Usuaris_Adapter.Usuari
             imgbtnedit = (ImageButton) v.findViewById(R.id.imgbtnEditarUsuari);
         }
 
-        public void bindUsuari(Usuari item) {
+        public void bindUsuari(final Usuari item) {
             final String uid=item.getAuth();
             tvIdUsuari.setText(item.getAuth());
             tvNomUsuari.setText(item.getNom());
@@ -113,6 +120,16 @@ public class Usuaris_Adapter extends RecyclerView.Adapter<Usuaris_Adapter.Usuari
 
                 }
             });
+            imgbtnedit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    App_Main app_main = (App_Main) v.getContext();
+                    DadesUsuari_Fragment dadesUsuari_fragment = DadesUsuari_Fragment.newInstance(item.getAuth());
+                    app_main.getSupportFragmentManager().beginTransaction().replace(R.id.mainFrameUsuaris, dadesUsuari_fragment).commit();
+                }
+            });
+
+
         }
     }
 
