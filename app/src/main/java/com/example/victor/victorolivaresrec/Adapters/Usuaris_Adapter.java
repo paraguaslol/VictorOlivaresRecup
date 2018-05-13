@@ -1,6 +1,7 @@
 package com.example.victor.victorolivaresrec.Adapters;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -91,7 +92,6 @@ public class Usuaris_Adapter extends RecyclerView.Adapter<Usuaris_Adapter.Usuari
                                                 DatabaseReference ref = ref2.child(uidEliminar);
                                                 ref.removeValue();
                                                 items.remove(getAdapterPosition());
-                                                //Usuaris_Adapter.notifyDataSetChanged();
                                             }
                                         }
 
@@ -110,6 +110,7 @@ public class Usuaris_Adapter extends RecyclerView.Adapter<Usuaris_Adapter.Usuari
                             });
                     AlertDialog dialog = builder.create();
                     dialog.show();
+
 
                 }
             });
