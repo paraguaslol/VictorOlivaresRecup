@@ -1,7 +1,6 @@
 package com.example.victor.victorolivaresrec.Adapters;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,12 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import com.example.victor.victorolivaresrec.App_Main;
 import com.example.victor.victorolivaresrec.Fragments.DadesUsuari_Fragment;
-import com.example.victor.victorolivaresrec.Fragments.Llistar_Usuaris;
 import com.example.victor.victorolivaresrec.Model.Usuari;
 import com.example.victor.victorolivaresrec.R;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +31,6 @@ public class Usuaris_Adapter extends RecyclerView.Adapter<Usuaris_Adapter.Usuari
         this.listener = listener;
     }
 
-
     @Override
     public Usuaris_Adapter.UsuariViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext())
@@ -50,7 +44,6 @@ public class Usuaris_Adapter extends RecyclerView.Adapter<Usuaris_Adapter.Usuari
         Usuari item = items.get(i);
         viewHolder.bindUsuari(item);
     }
-
 
     @Override
     public int getItemCount() {
@@ -128,8 +121,6 @@ public class Usuaris_Adapter extends RecyclerView.Adapter<Usuaris_Adapter.Usuari
                     app_main.getSupportFragmentManager().beginTransaction().replace(R.id.mainFrameUsuaris, dadesUsuari_fragment).commit();
                 }
             });
-
-
         }
     }
 

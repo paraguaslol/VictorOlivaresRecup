@@ -5,11 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-//import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.example.victor.victorolivaresrec.App_Main;
 import com.example.victor.victorolivaresrec.Model.Usuari;
 import com.example.victor.victorolivaresrec.R;
@@ -55,7 +51,7 @@ public class DadesUsuari_Fragment extends Fragment {
     private Button btnCancelar, btnOK;
     static int boolParam;
     public static String uidParam;
-    FragmentTransaction ft;
+
     private FirebaseAuth mAuth;
 
     public DadesUsuari_Fragment() {
@@ -140,11 +136,13 @@ public class DadesUsuari_Fragment extends Fragment {
             uidParam=id;
             boolParam=1;
         }
-        //Bundle args = new Bundle();
-        //fragment.setArguments(args);    -- No necesitamos parámetros
         return fragment;
     }
     public void modificarUsuari(){
+        regNomUsuari = etRegNomUsuari.getText().toString();
+        regNom = etRegNom.getText().toString();
+        regCognoms = etRegCognoms.getText().toString();
+        regAdreça = etRegAdreça.getText().toString();
         checkFields2();
         returnMain();
     }
@@ -167,7 +165,6 @@ public class DadesUsuari_Fragment extends Fragment {
             Toast.makeText(getContext(), "Has de plenar tots els camps", Toast.LENGTH_SHORT).show();
         }else{
             createAccount();
-            Toast.makeText(getContext(), "Eureka!", Toast.LENGTH_SHORT).show();
         }
     }
     public void checkFields2(){
@@ -205,14 +202,10 @@ public class DadesUsuari_Fragment extends Fragment {
                             .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-
                                     if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
                                         Log.e("TAG", "createUserWithEmail:success");
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         createUser(user.getUid());
-                                        getActivity().getIntent().putExtra("userUID",user.getUid());
-                                        getActivity().setResult(RESULT_OK,getActivity().getIntent());
                                         Toast.makeText(getContext(), "Registre exitós :)", Toast.LENGTH_SHORT).show();
                                         returnLogin();
                                     } else {

@@ -1,7 +1,6 @@
 package com.example.victor.victorolivaresrec;
 
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -31,10 +30,7 @@ import java.util.List;
 public class App_Main extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         Llistar_Usuaris.OnFragmentInteractionListener, DadesUsuari_Fragment.OnFragmentInteractionListener{
 
-    Llistar_Usuaris llistar_Usuaris;
-    FragmentManager fm;
     android.support.v4.app.FragmentTransaction ft;
-    List<Llistar_Usuaris> myFragCardList = new ArrayList<>();
     TextView nomusuarihead, emailhead;
     String nomUsuari;
     String emailUsuari;

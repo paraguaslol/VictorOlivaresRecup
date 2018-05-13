@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.example.victor.victorolivaresrec.App_Main;
 import com.example.victor.victorolivaresrec.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -49,17 +48,12 @@ public class Activity_Login extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             Log.d("TAG", "signInWithEmail:success");
                             Toast.makeText(Activity_Login.this, "Sessió iniciada :)", Toast.LENGTH_SHORT).show();
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            getIntent().putExtra("userUID",user.getUid());
-                            setResult(RESULT_OK,getIntent());
                             Intent intent = new Intent(Activity_Login.this, App_Main.class);
                             startActivity(intent);
                             Activity_Login.this.finish();
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w("TAG", "signInWithEmail:failure", task.getException());
                             Toast.makeText(Activity_Login.this, "No se ha pogut iniciar sessió :(",
                                     Toast.LENGTH_SHORT).show();
@@ -70,10 +64,6 @@ public class Activity_Login extends AppCompatActivity {
     }
 
     public void registrarUsuari(View v){
-        Intent intent = new Intent(this, Activity_Registrar.class);
-        startActivity(intent);
-    }
-    public void logUsuari(View v){
         Intent intent = new Intent(this, Activity_Registrar.class);
         startActivity(intent);
     }
